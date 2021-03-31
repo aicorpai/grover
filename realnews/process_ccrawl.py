@@ -11,6 +11,19 @@ import tldextract
 from tqdm import tqdm
 from warcio import ArchiveIterator
 
+
+import configparser
+import logging as log
+
+log.basicConfig()
+log.getLogger().setLevel(log.INFO)
+
+config = configparser.ConfigParser()
+config.readfp('/data/projects/grover/config.txt')
+environment = 'HOME_MAC'
+temp = config.get(environment, 'temp')
+temp2 = config.get(environment, 'temp2')
+
 with open(os.path.join(os.path.dirname(__file__), 'domain_to_allowed_subdomains.json'), 'r') as f:
     ALLOWED_SUBDOMAINS = json.load(f)
 
@@ -239,11 +252,11 @@ out_prefix = 'propaganda-' if args.propaganda else ''
 
 out_key = '{}{}/{}.jsonl'.format(out_prefix, args.path.split('/')[1], rest)
 
-with TemporaryFile(mode='w+b', dir='/home/ubuntu/temp/') as warctemp:
+with TemporaryFile(mode='w+b', dir=temp) as warctemp:
     s3client.download_fileobj('commoncrawl', args.path, warctemp)
     warctemp.seek(0)
 
-    with NamedTemporaryFile(mode='w', dir='/home/ubuntu/temp/') as f:
+    with NamedTemporaryFile(mode='w', dir=temp) as f:
         for record in tqdm(ArchiveIterator(warctemp, no_record_parse=False)):
             for parsed_record in parse_record(record, propaganda=args.propaganda):
                 f.write(json.dumps(parsed_record) + '\n')

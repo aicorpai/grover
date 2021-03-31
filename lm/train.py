@@ -20,9 +20,11 @@ import tensorflow as tf
 from lm.dataloader import input_fn_builder
 from lm.modeling import model_fn_builder, GroverConfig
 
-flags = tf.flags
-
+from absl import app
+from absl import flags
 FLAGS = flags.FLAGS
+from absl import logging
+from absl import app
 
 ## Required parameters
 flags.DEFINE_string(
@@ -154,4 +156,4 @@ def main(_):
 if __name__ == "__main__":
     flags.mark_flag_as_required("input_file")
     flags.mark_flag_as_required("output_dir")
-    tf.app.run()
+    tf.app.run(main)

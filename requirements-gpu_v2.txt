@@ -1,0 +1,35 @@
+dm-tree
+docutils>=0.15.2
+jinja2>=2.10
+Pillow>=5.0
+PyYAML>=2.12
+attrs>=17.3.0
+importlib-metadata<2,>=0.12
+scikit-learn<0.21.0,>=0.19.1
+chardet<4.0,>=2.0
+grpcio~=1.32.0
+mpmath
+pandas
+regex
+h5py~=2.10.0
+numpy
+tensorboard
+tensorflow-gpu
+#tensorboard==1.13.1
+#tensorflow-gpu==1.13.1
+tqdm
+requests
+# Pull CC. must run 'aws configure' after install
+aws
+awscli
+# processing
+Cython
+boto3
+newspaper3k
+tldextract
+warcio
+gsutil
+ujson
+pybloof
+# TF 1.x to 2.x
+absl-py

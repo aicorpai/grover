@@ -28,9 +28,11 @@ from lm.modeling import classification_model_fn_builder, GroverConfig
 from lm.utils import _save_np
 from sample.encoder import get_encoder
 
-flags = tf.flags
-
+from absl import app
+from absl import flags
 FLAGS = flags.FLAGS
+from absl import logging
+from absl import app
 
 ## Required parameters
 flags.DEFINE_string(
@@ -336,4 +338,4 @@ def main(_):
 if __name__ == "__main__":
     flags.mark_flag_as_required("input_data")
     flags.mark_flag_as_required("output_dir")
-    tf.app.run()
+    tf.app.run(main)
