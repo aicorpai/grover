@@ -1,11 +1,6 @@
 [DEFAULT]
 
-
-
 [HOME_MAC]
-
-temp1=/Users/bnreed/projects/grover-tf-2/temp
-temp2=/Users/bnreed/projects/grover-tf-2/temp2
 
 [HOME_CENTOS]
 
@@ -13,6 +8,3 @@ temp1=/data/projects/grover/temp
 temp2=/data/projects/grover/temp2
 
 [HOME_WIN]
-
-temp1=C:\Users\bnreed\projects\grover-tf-2\temp
-temp2=C:\Users\bnreed\projects\grover-tf-2\temp2
