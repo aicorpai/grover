@@ -136,7 +136,7 @@ def main(_):
     tf.io.gfile.makedirs(FLAGS.output_dir)
     input_files = []
     for input_pattern in FLAGS.input_file.split(","):
-        input_files.extend(tf.gfile.Glob(input_pattern))
+        input_files.extend(tf.io.gfile.glob(input_pattern))
 
     logging.info("*** Input Files ***")
     for input_file in input_files:
@@ -219,4 +219,4 @@ def main(_):
 if __name__ == "__main__":
     flags.mark_flag_as_required("input_file")
     flags.mark_flag_as_required("output_dir")
-    tf.app.run(main)
+    tf.compat.v1.app.run(main)

@@ -19,12 +19,12 @@ from lm.utils import get_shape_list
 
 def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
     """Creates an optimizer training op."""
-    global_step = tf.train.get_or_create_global_step()
+    global_step = tf.compat.v1.train.get_or_create_global_step()
 
     learning_rate = tf.constant(value=init_lr, shape=[], dtype=tf.float32)
 
     # Implements linear decay of the learning rate.
-    learning_rate = tf.train.polynomial_decay(
+    learning_rate = tf.compat.v1.train.polynomial_decay(
         learning_rate,
         global_step,
         num_train_steps,
@@ -60,10 +60,10 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
         exclude_from_weight_decay=["LayerNorm", "layer_norm", "bias"])
 
     if use_tpu:
-        optimizer = tf.contrib.tpu.CrossShardOptimizer(optimizer)
+        optimizer = tf.compat.v1.tpu.CrossShardOptimizer(optimizer)
 
-    tvars = tf.trainable_variables()
-    grads = tf.gradients(loss, tvars)
+    tvars = tf.compat.v1.trainable_variables()
+    grads = tf.gradients(ys=loss, xs=tvars)
 
     # You could do this, but instead we don't because a) it's slow and b) we already did the 'update clipping'
     # (grads, _) = tf.clip_by_global_norm(grads, clip_norm=1.0)
@@ -148,7 +148,7 @@ class AdaFactorOptimizer(tf.compat.v1.train.Optimizer):
             # This confounds the XLA rewriter and keeps it from fusing computations
             # across different variables.  This fusion is a bad for HBM usage, since
             # it causes the gradients to persist in memory.
-            grad_squared_mean = tf.reduce_mean(grad_squared)
+            grad_squared_mean = tf.reduce_mean(input_tensor=grad_squared)
             decay_rate += grad_squared_mean * 1e-30
             update_scale += grad_squared_mean * 1e-30
 
@@ -157,40 +157,40 @@ class AdaFactorOptimizer(tf.compat.v1.train.Optimizer):
             if self._use_factored(shape_list):
                 num_rows, num_columns = shape_list
 
-                vr = tf.get_variable(
+                vr = tf.compat.v1.get_variable(
                     name=param_name + "/adafactor_vr",
                     shape=[num_rows],
                     dtype=tf.float32,
                     trainable=False,
-                    initializer=tf.zeros_initializer())
-                vc = tf.get_variable(
+                    initializer=tf.compat.v1.zeros_initializer())
+                vc = tf.compat.v1.get_variable(
                     name=param_name + "/adafactor_vc",
                     shape=[num_columns],
                     dtype=tf.float32,
                     trainable=False,
-                    initializer=tf.zeros_initializer())
+                    initializer=tf.compat.v1.zeros_initializer())
 
-                next_vr = decay_rate * vr + (1 - decay_rate) * tf.reduce_mean(grad_squared, 1)
-                next_vc = decay_rate * vc + (1 - decay_rate) * tf.reduce_mean(grad_squared, 0)
+                next_vr = decay_rate * vr + (1 - decay_rate) * tf.reduce_mean(input_tensor=grad_squared, axis=1)
+                next_vc = decay_rate * vc + (1 - decay_rate) * tf.reduce_mean(input_tensor=grad_squared, axis=0)
 
-                long_term_mean = tf.reduce_mean(next_vr, -1, keepdims=True)
-                r_factor = tf.rsqrt(next_vr / long_term_mean + self.epsilon1)
-                c_factor = tf.rsqrt(next_vc + self.epsilon1)
+                long_term_mean = tf.reduce_mean(input_tensor=next_vr, axis=-1, keepdims=True)
+                r_factor = tf.math.rsqrt(next_vr / long_term_mean + self.epsilon1)
+                c_factor = tf.math.rsqrt(next_vc + self.epsilon1)
                 update = grad * tf.expand_dims(r_factor, -1) * tf.expand_dims(c_factor, -2)
 
                 assignments.append(vr.assign(next_vr, use_locking=self.use_locking))
                 assignments.append(vc.assign(next_vc, use_locking=self.use_locking))
             else:
-                v = tf.get_variable(
+                v = tf.compat.v1.get_variable(
                     name=param_name + "/adafactor_v",
                     shape=shape_list,
                     dtype=tf.float32,
                     trainable=False,
-                    initializer=tf.zeros_initializer())
+                    initializer=tf.compat.v1.zeros_initializer())
                 next_v = decay_rate * v + (1 - decay_rate) * grad_squared
 
                 assignments.append(v.assign(next_v, use_locking=self.use_locking))
-                update = grad * tf.rsqrt(next_v + self.epsilon1)
+                update = grad * tf.math.rsqrt(next_v + self.epsilon1)
 
             clipping_denom = tf.maximum(1.0, reduce_rms(update) / self.clipping_rate)
             update /= clipping_denom
@@ -231,4 +231,4 @@ class AdaFactorOptimizer(tf.compat.v1.train.Optimizer):
 
 
 def reduce_rms(x):
-    return tf.sqrt(tf.reduce_mean(tf.square(x)))
+    return tf.sqrt(tf.reduce_mean(input_tensor=tf.square(x)))

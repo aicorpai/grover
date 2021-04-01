@@ -15,18 +15,20 @@ parser.add_argument(
     '-metadata_fn',
     dest='metadata_fn',
     type=str,
+    default='/data/projects/grover/sample/april2019_set_mini.jsonl',
     help='Path to a JSONL containing metadata',
 )
 parser.add_argument(
     '-out_fn',
     dest='out_fn',
     type=str,
+    default='/data/projects/grover/sample/output/out.jsonl',
     help='Out jsonl, which will contain the completed jsons',
 )
 parser.add_argument(
     '-model_config_fn',
     dest='model_config_fn',
-    default='../lm/configs/base.json',
+    default='lm/configs/base.json',
     type=str,
     help='Configuration JSON for the model',
 )
@@ -101,20 +103,35 @@ top_p = np.ones((num_chunks, batch_size_per_chunk), dtype=np.float32) * args.top
 with open(args.metadata_fn, 'r') as f:
     articles = [json.loads(l) for i, l in enumerate(f) if i % args.num_folds == args.fold]
 
-tf_config = tf.ConfigProto(allow_soft_placement=True)
+#TF2 tf_config = tf.ConfigProto(allow_soft_placement=True)
 
-with tf.Session(config=tf_config, graph=tf.Graph()) as sess, \
-        open(args.out_fn, 'w') as f_out:
-    initial_context = tf.placeholder(tf.int32, [batch_size_per_chunk, None])
-    p_for_topp = tf.placeholder(tf.float32, [batch_size_per_chunk])
-    eos_token = tf.placeholder(tf.int32, [])
-    ignore_ids = tf.placeholder(tf.bool, [news_config.vocab_size])
+#TF2 with tf.Session(config=tf_config, graph=tf.Graph()) as sess, open(args.out_fn, 'w') as f_out:
+with open(args.out_fn, 'w') as f_out:
+    #TF2 initial_context = tf.placeholder(tf.int32, [batch_size_per_chunk, None])
+    #TF2 p_for_topp = tf.placeholder(tf.float32, [batch_size_per_chunk])
+    #TF2 eos_token = tf.placeholder(tf.int32, [])
+    #TF2 ignore_ids = tf.placeholder(tf.bool, [news_config.vocab_size])
+
+    '''
+    #TF2 V1 version of: sample outputs from a model, and do it all at once
+    :param news_config: Configuration used to construct the model
+    :param initial_context: [batch_size, seq_length] that we'll start generating with
+    :param eos_token: Stop generating if you see this (tf scalar)
+    :param ignore_ids: NEVER GENERATE THESE [vocab_size]
+    :retur
+    '''
+    initial_context = [args.batch_size, 256]
+    # starts with end_
+    eos_token = 'end_'
+    ignore_ids = None
+    p_for_topp = None 
+    
     tokens, probs = sample(news_config=news_config, initial_context=initial_context,
                            eos_token=eos_token, ignore_ids=ignore_ids, p_for_topp=p_for_topp,
                            do_topk=False)
 
-    saver = tf.train.Saver()
-    saver.restore(sess, args.model_ckpt)
+    #TF2 saver = tf.train.Saver()
+    #TF2 saver.restore(sess, args.model_ckpt)
 
     # Let's go!
     for i, article in enumerate(tqdm(articles)):

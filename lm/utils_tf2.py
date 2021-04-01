@@ -53,7 +53,7 @@ def assert_rank(tensor, expected_rank, name=None):
 
     actual_rank = tensor.shape.ndims
     if actual_rank not in expected_rank_dict:
-        scope_name = tf.get_variable_scope().name
+        scope_name = tf.compat.v1.get_variable_scope().name
         raise ValueError(
             "For the tensor `%s` in scope `%s`, the actual rank "
             "`%d` (shape = %s) is not equal to the expected rank `%s`" %
@@ -91,7 +91,7 @@ def get_shape_list(tensor, expected_rank=None, name=None):
     if not non_static_indexes:
         return shape
 
-    dyn_shape = tf.shape(tensor)
+    dyn_shape = tf.shape(input=tensor)
     for index in non_static_indexes:
         shape[index] = dyn_shape[index]
     return shape
@@ -117,13 +117,13 @@ def gelu(input_tensor):
 def layer_norm(input_tensor, name=None, epsilon=1e-5):
     """Run layer normalization on the last dimension of the tensor."""
     name2use = f'LayerNorm_{name}' if name is not None else name
-    with tf.variable_scope(name2use, default_name='LayerNorm'):
+    with tf.compat.v1.variable_scope(name2use, default_name='LayerNorm'):
         dim = input_tensor.shape[-1].value
-        gamma = tf.get_variable('gamma', [dim], initializer=tf.constant_initializer(1))
-        beta = tf.get_variable('beta', [dim], initializer=tf.constant_initializer(0))
-        mean = tf.reduce_mean(input_tensor, axis=-1, keepdims=True)
-        std = tf.reduce_mean(tf.square(input_tensor - mean), axis=-1, keepdims=True)
-        input_tensor = (input_tensor - mean) * tf.rsqrt(std + epsilon)
+        gamma = tf.compat.v1.get_variable('gamma', [dim], initializer=tf.compat.v1.constant_initializer(1))
+        beta = tf.compat.v1.get_variable('beta', [dim], initializer=tf.compat.v1.constant_initializer(0))
+        mean = tf.reduce_mean(input_tensor=input_tensor, axis=-1, keepdims=True)
+        std = tf.reduce_mean(input_tensor=tf.square(input_tensor - mean), axis=-1, keepdims=True)
+        input_tensor = (input_tensor - mean) * tf.math.rsqrt(std + epsilon)
         input_tensor = input_tensor * gamma + beta
     return input_tensor
 
@@ -218,11 +218,11 @@ def construct_scalar_host_call(metric_dict, model_dir, prefix=""):
         #TF2 with tf.contrib.summary.create_file_writer(
         with tf.compat.v2.summary.create_file_writer(
                 logdir=model_dir, filename_suffix=".host_call").as_default():
-            with tf.contrib.summary.always_record_summaries():
+            with tf.compat.v2.summary.record_if(True):
                 for i, name in enumerate(metric_names):
-                    tf.contrib.summary.scalar(prefix + name, args[i][0], step=step)
+                    tf.compat.v2.summary.scalar(name=prefix + name, data=args[i][0], step=step)
 
-                return tf.contrib.summary.all_summary_ops()
+                return tf.compat.v1.summary.all_v2_summary_ops()
 
     # To log the current learning rate, and gradient norm for Tensorboard, the
     # summary op needs to be run on the host CPU via host_call. host_call

@@ -1,10 +1,20 @@
 [DEFAULT]
 
-[HOME_MAC]
+[MAC]
 
-[HOME_CENTOS]
+[CENTOS_7]
 
 temp1=/data/projects/grover/temp
 temp2=/data/projects/grover/temp2
 
-[HOME_WIN]
+[WIN_10]
+
+[RHEL_8]
+
+temp1=/data/projects/grover/temp
+temp2=/data/projects/grover/temp2
+
+[kali]
+
+[pi]
+
