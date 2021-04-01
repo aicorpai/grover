@@ -14,9 +14,9 @@
 # limitations under the License.
 
 import os
-from lm.modeling import model_fn_builder, GroverConfig
+from lm.modeling_tf2 import model_fn_builder, GroverConfig
 import tensorflow as tf
-from lm.dataloader import input_fn_builder
+from lm.dataloader_tf2 import input_fn_builder
 import numpy as np
 import tempfile
 import h5py
@@ -150,7 +150,7 @@ def main(_):
 
     #TF2 is_per_host = tf.contrib.tpu.InputPipelineConfig.PER_HOST_V2
     is_per_host = tf.compat.v1.estimator.tpu.InputPipelineConfig.PER_HOST_V2
-    
+
     #TF2 run_config = tf.contrib.tpu.RunConfig(
     run_config = tf.compat.v1.estimator.tpu.RunConfig(
         cluster=tpu_cluster_resolver,

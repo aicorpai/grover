@@ -20,8 +20,8 @@ import math
 import six
 import tensorflow as tf
 
-from lm import optimization_adafactor
-from lm.utils import get_assignment_map_from_checkpoint, get_shape_list, get_attention_mask, gelu, layer_norm, dropout, \
+from lm import optimization_adafactor_tf2
+from lm.utils_tf2 import get_assignment_map_from_checkpoint, get_shape_list, get_attention_mask, gelu, layer_norm, dropout, \
     construct_scalar_host_call
 
 from absl import app
@@ -610,7 +610,7 @@ def model_fn_builder(config: GroverConfig, init_checkpoint, learning_rate,
         total_loss = model.lm_loss()
 
         if is_training:
-            train_op, train_metrics = optimization_adafactor.create_optimizer(
+            train_op, train_metrics = optimization_adafactor_tf2.create_optimizer(
                 total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
             tvars = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.GLOBAL_VARIABLES)
         else:
@@ -873,7 +873,7 @@ def classification_model_fn_builder(config: GroverConfig, init_checkpoint, learn
         total_loss = lm_loss_coef * model.lm_loss() + class_loss
 
         if is_training:
-            train_op, train_metrics = optimization_adafactor.create_optimizer(
+            train_op, train_metrics = optimization_adafactor_tf2.create_optimizer(
                 total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
             # tvars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
             tvars = tf.compat.v1.trainable_variables()

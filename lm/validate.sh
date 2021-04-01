@@ -14,7 +14,7 @@ model_type=""
 let batch_size="$batch_size_per_core * $num_tpu_cores"
 
 
-python validate.py \
+python validate_tf2.py \
     --config_file=configs/${model_type}.json \
     --input_file=${input_file} \
     --output_dir=${OUTPUT_DIR} \

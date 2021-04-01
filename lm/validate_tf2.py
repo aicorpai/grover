@@ -14,9 +14,9 @@
 # limitations under the License.
 
 import os
-from lm.modeling import model_fn_builder, GroverConfig
+from lm.modeling_tf2 import model_fn_builder, GroverConfig
 import tensorflow as tf
-from lm.dataloader import input_fn_builder
+from lm.dataloader_tf2 import input_fn_builder
 import numpy as np
 import tempfile
 import h5py
