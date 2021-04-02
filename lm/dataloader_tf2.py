@@ -16,6 +16,17 @@
 import collections
 import tensorflow as tf
 
+import configparser
+import logging as log
+
+log.basicConfig()
+log.getLogger().setLevel(log.INFO)
+
+config = configparser.ConfigParser()
+config.readfp(open('/data/projects/grover/config.txt'))
+environment = 'CENTOS_7'
+metadata_fn = config.get(environment, 'metadata_fn')
+
 
 def _decode_record(record, name_to_features):
     """Decodes a record to a TensorFlow example."""

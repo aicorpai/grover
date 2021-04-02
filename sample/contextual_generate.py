@@ -10,74 +10,101 @@ from tqdm import tqdm
 
 import argparse
 
+from absl import app
+from absl import flags
+FLAGS = flags.FLAGS
+from absl import logging
+from absl import app
+
+import configparser
+import logging as log
+
+log.basicConfig()
+log.getLogger().setLevel(log.INFO)
+
+config = configparser.ConfigParser()
+config.readfp(open('/data/projects/grover/config.txt'))
+environment='CENTOS_7'
+
+metadata_fn = config.get(environment, 'metadata_fn')
+out_fn = config.get(environment, 'out_fn')
+model_config_fn = config.get(environment, 'model_config_fn')
+model_ckpt = config.get(environment, 'model_ckpt')
+target = config.get(environment, 'target')
+batch_size = config.get(environment, 'batch_size')
+num_folds = config.get(environment, 'num_folds')
+fold = config.get(environment, 'fold')
+max_batch_size = config.get(environment, 'max_batch_size')
+top_p = config.get(environment, 'top_p')
+
 parser = argparse.ArgumentParser(description='Contextual generation (aka given some metadata we will generate articles')
 parser.add_argument(
     '-metadata_fn',
     dest='metadata_fn',
     type=str,
-    default='/data/projects/grover/sample/april2019_set_mini.jsonl',
+    default=metadata_fn,
     help='Path to a JSONL containing metadata',
 )
 parser.add_argument(
     '-out_fn',
     dest='out_fn',
     type=str,
-    default='/data/projects/grover/sample/output/out.jsonl',
+    default=out_fn,
     help='Out jsonl, which will contain the completed jsons',
 )
 parser.add_argument(
     '-model_config_fn',
     dest='model_config_fn',
-    default='lm/configs/base.json',
+    default=model_config_fn,
     type=str,
     help='Configuration JSON for the model',
 )
 parser.add_argument(
     '-model_ckpt',
     dest='model_ckpt',
-    default='../models/base/model.ckpt',
+    default=model_ckpt,
     type=str,
     help='checkpoint file for the model',
 )
 parser.add_argument(
     '-target',
     dest='target',
-    default='article',
+    default=target,
     type=str,
     help='What to generate for each item in metadata_fn. can be article (body), title, etc.',
 )
 parser.add_argument(
     '-batch_size',
     dest='batch_size',
-    default=1,
+    default=batch_size,
     type=int,
     help='How many things to generate per context. will split into chunks if need be',
 )
 parser.add_argument(
     '-num_folds',
     dest='num_folds',
-    default=1,
+    default=num_folds,
     type=int,
     help='Number of folds. useful if we want to split up a big file into multiple jobs.',
 )
 parser.add_argument(
     '-fold',
     dest='fold',
-    default=0,
+    default=fold,
     type=int,
     help='which fold we are on. useful if we want to split up a big file into multiple jobs.'
 )
 parser.add_argument(
     '-max_batch_size',
     dest='max_batch_size',
-    default=None,
+    default=max_batch_size,
     type=int,
     help='max batch size. You can leave this out and we will infer one based on the number of hidden layers',
 )
 parser.add_argument(
     '-top_p',
     dest='top_p',
-    default=0.95,
+    default=top_p,
     type=float,
     help='p to use for top p sampling. if this isn\'t none, use this for everthing'
 )

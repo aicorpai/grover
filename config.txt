@@ -6,6 +6,16 @@
 
 temp1=/data/projects/grover/temp
 temp2=/data/projects/grover/temp2
+metadata_fn=/data/projects/grover/sample/april2019_set_mini.jsonl
+out_fn=/data/projects/grover/sample/output/out.jsonl
+model_config_fn=lm/configs/base.json
+model_ckpt=../models/base/model.ckpt
+target=article
+batch_size=1
+num_folds=1
+fold=0
+max_batch_size=2048
+top_p=0.95
 
 [WIN_10]
 
