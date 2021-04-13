@@ -10,13 +10,13 @@ Due to file sizes, models and checkpoints are not included. please refer to orig
 
 **Discrimination checkpoints**
 
-Medium trained on medium, top-p=0.96:
-gs://grover-models/discrimination/generator=medium\~discriminator=grover\~discsize=medium\~dataset=p=0.96/model.ckpt-1562.data-00000-of-00001
-gs://grover-models/discrimination/generator=medium\~discriminator=grover\~discsize=medium\~dataset=p=0.96/model.ckpt-1562.index
-gs://grover-models/discrimination/generator=medium\~discriminator=grover\~discsize=medium\~dataset=p=0.96/model.ckpt-1562.meta
+Medium trained on medium, top-p=0.96:  
+gs://grover-models/discrimination/generator=medium\~discriminator=grover\~discsize=medium\~dataset=p=0.96/model.ckpt-1562.data-00000-of-00001. 
+gs://grover-models/discrimination/generator=medium\~discriminator=grover\~discsize=medium\~dataset=p=0.96/model.ckpt-1562.index. 
+gs://grover-models/discrimination/generator=medium\~discriminator=grover\~discsize=medium\~dataset=p=0.96/model.ckpt-1562.meta. 
 
-Mega trained on mega, top-p=0.94:
-gs://grover-models/discrimination/generator=mega\~discriminator=grover\~discsize=meg\~dataset=p=0.94/model.ckpt-1562.data-00000-of-00001
-gs://grover-models/discrimination/generator=mega\~discriminator=grover\~discsize=mega\~dataset=p=0.94/model.ckpt-1562.index
-gs://grover-models/discrimination/generator=mega\~discriminator=grover\~discsize=mega\~dataset=p=0.94/model.ckpt-1562.meta
+Mega trained on mega, top-p=0.94:  
+gs://grover-models/discrimination/generator=mega\~discriminator=grover\~discsize=meg\~dataset=p=0.94/model.ckpt-1562.data-00000-of-00001. 
+gs://grover-models/discrimination/generator=mega\~discriminator=grover\~discsize=mega\~dataset=p=0.94/model.ckpt-1562.index. 
+gs://grover-models/discrimination/generator=mega\~discriminator=grover\~discsize=mega\~dataset=p=0.94/model.ckpt-1562.meta. 
 
