@@ -17,15 +17,10 @@ import collections
 import tensorflow as tf
 
 import configparser
-import logging as log
+import logging
 
-log.basicConfig()
-log.getLogger().setLevel(log.INFO)
-
-config = configparser.ConfigParser()
-config.readfp(open('/data/projects/grover/config.txt'))
-environment = 'CENTOS_7'
-metadata_fn = config.get(environment, 'metadata_fn')
+logging.basicConfig()
+logging.getLogger().setLevel(logging.INFO)
 
 
 def _decode_record(record, name_to_features):

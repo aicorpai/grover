@@ -644,7 +644,7 @@ def model_fn_builder(config: GroverConfig, init_checkpoint, learning_rate,
         if mode == tf.estimator.ModeKeys.TRAIN:
             if use_tpu:
                 #TF2 output_spec = tf.contrib.tpu.TPUEstimatorSpec(
-                output_spec = tf.compat.v1.estimator.tpu.TPUEstimator(
+                output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
                     mode=mode,
                     loss=total_loss,
                     train_op=train_op,
@@ -653,7 +653,7 @@ def model_fn_builder(config: GroverConfig, init_checkpoint, learning_rate,
                     scaffold_fn=scaffold_fn)
             else:
                 #TF2 output_spec = tf.contrib.tpu.TPUEstimatorSpec(
-                output_spec = tf.compat.v1.estimator.tpu.TPUEstimator(
+                output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
                     mode=mode,
                     loss=total_loss,
                     train_op=train_op,
@@ -671,7 +671,7 @@ def model_fn_builder(config: GroverConfig, init_checkpoint, learning_rate,
             eval_metrics = (metric_fn,
                             [total_loss])
             #TF2 output_spec = tf.contrib.tpu.TPUEstimatorSpec(
-            output_spec = tf.compat.v1.estimator.tpu.TPUEstimator(
+            output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
                 mode=mode,
                 loss=total_loss,
                 eval_metrics=eval_metrics,
@@ -699,7 +699,7 @@ def model_fn_builder(config: GroverConfig, init_checkpoint, learning_rate,
             pred_logprobs = tf.squeeze(tf.compat.v1.batch_gather(model.log_probs, predictions[:, :, None]), axis=2)
 
             #TF2 output_spec = tf.contrib.tpu.TPUEstimatorSpec(
-            output_spec = tf.compat.v1.estimator.tpu.TPUEstimator(
+            output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
                 mode=mode,
                 predictions={'gt_logprobs': gt_logprobs,
                              'top_p_required': top_p_required,
@@ -913,7 +913,7 @@ def classification_model_fn_builder(config: GroverConfig, init_checkpoint, learn
         if mode == tf.estimator.ModeKeys.TRAIN:
             if use_tpu:
                 #TF2 output_spec = tf.contrib.tpu.TPUEstimatorSpec(
-                output_spec = tf.compat.v1.estimator.tpu.TPUEstimator(
+                output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
                     mode=mode,
                     loss=total_loss,
                     train_op=train_op,
@@ -922,7 +922,7 @@ def classification_model_fn_builder(config: GroverConfig, init_checkpoint, learn
                     scaffold_fn=scaffold_fn)
             else:
                 #TF2 output_spec = tf.contrib.tpu.TPUEstimatorSpec(
-                output_spec = tf.compat.v1.estimator.tpu.TPUEstimator(
+                output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
                     mode=mode,
                     loss=total_loss,
                     train_op=train_op,
@@ -944,14 +944,14 @@ def classification_model_fn_builder(config: GroverConfig, init_checkpoint, learn
             eval_metrics = (metric_fn,
                             [per_example_loss, label_ids, logits, is_real_example])
             #TF2 output_spec = tf.contrib.tpu.TPUEstimatorSpec(
-            output_spec = tf.compat.v1.estimator.tpu.TPUEstimator(
+            output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
                 mode=mode,
                 loss=total_loss,
                 eval_metrics=eval_metrics,
                 scaffold_fn=scaffold_fn)
         else:
             #TF2 output_spec = tf.contrib.tpu.TPUEstimatorSpec(
-            output_spec = tf.compat.v1.estimator.tpu.TPUEstimator(
+            output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
                 mode=mode,
                 predictions={'logits': logits,
                              'probs': tf.nn.softmax(logits, axis=-1)},
